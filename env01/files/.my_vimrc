@@ -1,0 +1,6 @@
+syntax on
+highlight comment ctermfg=lightblue
+highlight constant ctermfg=red
+set showmatch
+set tabstop=3
+set ignorecase

@@ -1,0 +1,64 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+VAGRANTFILE_API_VERSION = "2"
+VAGRANT_EXPERIMENTAL = "disks"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.define "node01" do |node|
+    node.vm.box = "generic/rhel8"
+    node.vm.hostname = "node01"
+    node.vm.network "private_network", ip: "192.168.100.101"
+    node.vm.disk :disk, size: "30GB", primary: true
+    node.vm.disk :disk, size: "10GB", name: "extra_storage"
+    node.vm.synced_folder "../../SharedFolder", "/SharedFolder"
+    node.vm.provider "virtualbox" do |vb|
+      vb.name = "env01-node01"
+      vb.memory = "2048"
+      vb.cpus = 2
+      vb.linked_clone = true
+    end
+    node.vm.provision "file", source: "../myvagrant", destination: ".ssh/id_rsa"
+    node.vm.provision "file", source: "../myvagrant.pub", destination: ".ssh/id_rsa.pub"
+    node.vm.provision "file", source: "files/hosts", destination: "/tmp/hosts"
+    node.vm.provision "file", source: "files/.bash_profile", destination: ".bash_profile"
+    node.vm.provision "file", source: "files/.my_bashrc", destination: ".my_bashrc"
+    node.vm.provision "file", source: "files/.my_vimrc", destination: ".my_vimrc"
+    node.vm.provision "shell", inline: <<-SHELL
+      echo "¡Bienvenido!" >> /etc/motd
+      mv /tmp/hosts /etc/hosts
+      cat .ssh/id_rsa.pub >> .ssh/authorized_keys
+      chmod 400 .ssh/id_rsa*
+      chmod 640 .bash* .my_*
+    SHELL
+  end
+
+  config.vm.define "node02" do |node|
+    node.vm.box = "generic/rhel8"
+    node.vm.hostname = "node02"
+    node.vm.network "private_network", ip: "192.168.100.102"
+    node.vm.disk :disk, size: "20GB", primary: true
+    node.vm.disk :disk, size: "5GB", name: "extra_storage"
+    node.vm.synced_folder "../../SharedFolder", "/SharedFolder"
+    node.vm.provider "virtualbox" do |vb|
+      vb.name = "env01-node02"
+      vb.memory = "1024"
+      vb.cpus = 1
+      vb.linked_clone = true
+    end
+    node.vm.provision "file", source: "../myvagrant", destination: ".ssh/id_rsa"
+    node.vm.provision "file", source: "../myvagrant.pub", destination: ".ssh/id_rsa.pub"
+    node.vm.provision "file", source: "files/hosts", destination: "/tmp/hosts"
+    node.vm.provision "file", source: "files/.bash_profile", destination: ".bash_profile"
+    node.vm.provision "file", source: "files/.my_bashrc", destination: ".my_bashrc"
+    node.vm.provision "file", source: "files/.my_vimrc", destination: ".my_vimrc"
+    node.vm.provision "shell", inline: <<-SHELL
+      echo "¡Bienvenido!" >> /etc/motd
+      mv /tmp/hosts /etc/hosts
+      cat .ssh/id_rsa.pub >> .ssh/authorized_keys
+      chmod 400 .ssh/id_rsa*
+      chmod 640 .bash* .my_*
+    SHELL
+  end
+
+end
