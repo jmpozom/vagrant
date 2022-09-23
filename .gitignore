@@ -1,4 +1,4 @@
-.git
-*/.vagrant
+.git/
+*/.vagrant/
 myvagrant
 myvagrant.pub

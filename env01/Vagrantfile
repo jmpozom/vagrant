@@ -3,60 +3,49 @@
 VAGRANTFILE_API_VERSION = "2"
 ENV['VAGRANT_EXPERIMENTAL'] = "disks"
 
+servers = [
+  { :hostname => "node01", :ip => "192.168.100.101", :ssh_port => "2201", :cpu => 2, :memory => "2048", :extra_storage => "10GB" },
+  { :hostname => "node02", :ip => "192.168.100.102", :ssh_port => "2202", :cpu => 1, :memory => "1024", :extra_storage => "5GB" },
+  { :hostname => "node03", :ip => "192.168.100.103", :ssh_port => "2203", :cpu => 1, :memory =>  "512", :extra_storage => "1GB" },
+]
+
+$PROV_SCRIPT = <<-SCRIPT
+  echo "¡Bienvenido!" >> /etc/motd
+  mv /tmp/hosts /etc/hosts
+  cat .ssh/id_rsa.pub >> .ssh/authorized_keys
+  chmod 400 .ssh/id_rsa*
+  chmod 640 .bash* .my_*
+SCRIPT
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-  config.vm.define "node01" do |node|
-    node.vm.box = "generic/rhel8"
-    node.vm.hostname = "node01"
-    node.vm.network "private_network", ip: "192.168.100.101"
-    node.vm.disk :disk, size: "10GB", name: "extra_storage"
-    node.vm.synced_folder "../../SharedFolder", "/SharedFolder"
-    node.vm.provider "virtualbox" do |vb|
-      vb.name = "env01-node01"
-      vb.memory = "2048"
-      vb.cpus = 2
-      vb.linked_clone = true
-    end
-    node.vm.provision "file", source: "../myvagrant", destination: ".ssh/id_rsa"
-    node.vm.provision "file", source: "../myvagrant.pub", destination: ".ssh/id_rsa.pub"
-    node.vm.provision "file", source: "files/hosts", destination: "/tmp/hosts"
-    node.vm.provision "file", source: "files/.bash_profile", destination: ".bash_profile"
-    node.vm.provision "file", source: "files/.my_bashrc", destination: ".my_bashrc"
-    node.vm.provision "file", source: "files/.my_vimrc", destination: ".my_vimrc"
-    node.vm.provision "shell", inline: <<-SHELL
-      echo "¡Bienvenido!" >> /etc/motd
-      mv /tmp/hosts /etc/hosts
-      cat .ssh/id_rsa.pub >> .ssh/authorized_keys
-      chmod 400 .ssh/id_rsa*
-      chmod 640 .bash* .my_*
-    SHELL
-  end
+  config.vm.box = "generic/rhel8"
 
-  config.vm.define "node02" do |node|
-    node.vm.box = "generic/rhel8"
-    node.vm.hostname = "node02"
-    node.vm.network "private_network", ip: "192.168.100.102"
-    node.vm.disk :disk, size: "5GB", name: "extra_storage"
-    node.vm.synced_folder "../../SharedFolder", "/SharedFolder"
-    node.vm.provider "virtualbox" do |vb|
-      vb.name = "env01-node02"
-      vb.memory = "1024"
-      vb.cpus = 1
-      vb.linked_clone = true
-    end
-    node.vm.provision "file", source: "../myvagrant", destination: ".ssh/id_rsa"
-    node.vm.provision "file", source: "../myvagrant.pub", destination: ".ssh/id_rsa.pub"
-    node.vm.provision "file", source: "files/hosts", destination: "/tmp/hosts"
-    node.vm.provision "file", source: "files/.bash_profile", destination: ".bash_profile"
-    node.vm.provision "file", source: "files/.my_bashrc", destination: ".my_bashrc"
-    node.vm.provision "file", source: "files/.my_vimrc", destination: ".my_vimrc"
-    node.vm.provision "shell", inline: <<-SHELL
-      echo "¡Bienvenido!" >> /etc/motd
-      mv /tmp/hosts /etc/hosts
-      cat .ssh/id_rsa.pub >> .ssh/authorized_keys
-      chmod 400 .ssh/id_rsa*
-      chmod 640 .bash* .my_*
-    SHELL
-  end
+  servers.each do |conf|
 
+    config.vm.define conf[:hostname] do |node|
+
+      node.vm.hostname = conf[:hostname]
+      node.vm.network "private_network", ip: conf[:ip]
+      node.vm.network "forwarded_port", id: "ssh", guest: 22, host: conf[:ssh_port]
+      node.vm.disk :disk, size: conf[:extra_storage], name: "extra_storage"
+      node.vm.synced_folder "../../SharedFolder", "/SharedFolder"
+
+      node.vm.provider "virtualbox" do |vbox|
+        vbox.name = 'env01-'+conf[:hostname]
+        vbox.cpus = conf[:cpu]
+        vbox.memory = conf[:memory]
+        vbox.linked_clone = true
+      end
+
+      node.vm.provision "file", source: "../myvagrant", destination: ".ssh/id_rsa"
+      node.vm.provision "file", source: "../myvagrant.pub", destination: ".ssh/id_rsa.pub"
+      node.vm.provision "file", source: "files/hosts", destination: "/tmp/hosts"
+      node.vm.provision "file", source: "files/.bash_profile", destination: ".bash_profile"
+      node.vm.provision "file", source: "files/.my_bashrc", destination: ".my_bashrc"
+      node.vm.provision "file", source: "files/.my_vimrc", destination: ".my_vimrc"
+      node.vm.provision "shell", inline: $PROV_SCRIPT
+
+    end
+  end
 end
