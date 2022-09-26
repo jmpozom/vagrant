@@ -7,7 +7,7 @@
 Vagrant usage examples.
 	
 ## Technologies
-Project is created with:
+This project is created with:
 * Vagrant
 * VirtualBox
 * Git
