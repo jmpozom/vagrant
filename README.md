@@ -13,7 +13,7 @@ Project is created with:
 * Git
 	
 ## Setup
-To run this project, install it locally using npm:
+To run this project:
 
 ```
 $ cd c/VMs/vagrant/env01
