@@ -7,7 +7,7 @@
 Vagrant usage examples.
 	
 ## Technologies
-This project is created with:
+This project requires:
 * Vagrant
 * VirtualBox
 * Git
