@@ -4,7 +4,7 @@
 * [Setup](#setup)
 
 ## General info
-Vagrant examples.
+Vagrant usage examples.
 	
 ## Technologies
 Project is created with:
