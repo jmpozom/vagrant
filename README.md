@@ -2,24 +2,29 @@
 * [General info](#general-info)
 * [Technologies](#technologies)
 * [Setup](#setup)
+* [Environments](#environments)
 
 ## General info
 Vagrant usage examples.
-	
+
 ## Technologies
 This project requires:
 * Vagrant
 * VirtualBox
 * Git
-	
-## Setup
-To run this project:
 
+## Setup
+To run FULL-RHEL project:
 ```
-$ cd c/VMs/vagrant/env01
-$ vagrant up
-$ vagrant destroy -f
+$ cd c/VMs/vagrant/FULL-RHEL
+$ time vagrant up
+$ time vagrant destroy -f
 ```
+
+# git add README.md
+ # date +%F\ %R
+
+
 ## Environments
 
 * FULL-RHEL
