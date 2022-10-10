@@ -1,0 +1,40 @@
+# <LOCALCONFIGURATION>
+#
+# Global aliases
+alias l='ls -alF'
+alias cp='cp -i'
+alias mv='mv -i'
+alias rm='rm -i'
+# alias vi='vim'
+alias size='du -ks *|sort -rn'
+alias sizer='du -a|sort -rn|head -25'
+#
+# Global configuration
+_bred="$(tput bold 2> /dev/null; tput setaf 1 2> /dev/null)"
+_sgr0="$(tput sgr0 2> /dev/null)"
+export MYHOSTNAME=$(echo $HOSTNAME |awk -F\- '{print $NF}')
+export PS1="\n\D{%Y/%m/%d} \t \u@$MYHOSTNAME:\W#\n# "
+export PS1="\[$_bred\]$PS1\[$_sgr0\]"
+unset PROMPT_COMMAND
+unset _bred _sgr0
+# export PS1="\n\D{%Y/%m/%d} \t \u@\h:\W#\n# "
+# export PS1="\D{%Y/%m/%d} \t \u@\h:\W# "
+# export PROMPT_COMMAND='echo -ne "\033]0;${USER}@${MYHOSTNAME}:${PWD/#$HOME/~}\007"'
+bak () { TODAY=$(date '+%Y-%m-%d-%H%M'); cp -p $1 $1.${TODAY}; }
+checkreg () { for INSTANCE in $(cat /etc/hosts|egrep '_M|_F'|awk '{print $2}'); do echo -ne "$INSTANCE: "; dig @$INSTANCE $1|grep ^$1; done }
+set -o emacs
+export VIMINIT="source ~/.my_vimrc"
+#
+# SSH Agent configuration
+SSHAGENT=/usr/bin/ssh-agent
+SSHAGENTARGS="-s"
+if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
+        eval `$SSHAGENT $SSHAGENTARGS` > /dev/null
+        trap "kill $SSH_AGENT_PID" 0
+fi
+#
+# Nominum configuration
+export PATH=$PATH:/usr/local/nom/sbin:/usr/local/nom/bin
+export MANPATH=$MANPATH:/usr/local/nom/man
+#
+# </LOCALCONFIGURATION>
