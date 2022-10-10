@@ -16,14 +16,15 @@ This project requires:
 ## Setup
 To run FULL-RHEL project:
 ```
-$ cd c/VMs/vagrant/FULL-RHEL
-$ time vagrant up
-$ time vagrant destroy -f
+# cd c/VMs/vagrant/FULL-RHEL
+# time vagrant up
+# time vagrant destroy -f
 ```
-
+```
 # git add README.md
- # date +%F\ %R
-
+# git commit -m "$(date +%F\ %R)"
+# git push
+```
 
 ## Environments
 
