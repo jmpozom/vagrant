@@ -39,7 +39,7 @@ To run FULL-RHEL project:
 rhel7a# for SERVER in node101 node102 node103 node104; do echo -e "\n# $SERVER"; ssh vagrant@$SERVER "uname -a; cat /etc/system-release"; echo; done
 ```
 
-* env01:
+* env01
 ```
   config.vm.box = "generic/rhel8"
   { :hostname => "node01", :ip => "192.168.100.101", :ssh_port => "2201", :cpu => 2, :memory => "2048", :extra_storage => "10GB" },
@@ -47,7 +47,7 @@ rhel7a# for SERVER in node101 node102 node103 node104; do echo -e "\n# $SERVER";
   { :hostname => "node03", :ip => "192.168.100.103", :ssh_port => "2203", :cpu => 1, :memory =>  "512", :extra_storage => "1GB" },
 ```
 
-* env02:
+* env02
 ```
   { :hostname => "node21", :operating_system => "almalinux/8",   :ip => "192.168.100.121", :ssh_port => "2221", :cpu => 2, :memory => "1024", :extra_storage => "5GB" },
   { :hostname => "node22", :operating_system => "generic/alma8", :ip => "192.168.100.121", :ssh_port => "2222", :cpu => 1, :memory => "1024", :extra_storage => "5GB" },
